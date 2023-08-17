@@ -10,29 +10,43 @@ const PostList = {
             })
             .catch(error => console.error('Error fetching posts:', error));
     },
-    view: () => {
-        return m('div', [
-            m('h2', 'Post List'),
-            m('button', { onclick: PostList.loadPosts }, 'Load Posts'),
-            m('ul', PostList.posts.map(post => m('li', post.title.und)))
-        ]);
-    }
+    // view: () => {
+    //     return m('div', [
+    //         m('h2', 'Post List'),
+    //         m('button', { onclick: PostList.loadPosts }, 'Load Posts'),
+    //         m('ul', PostList.posts.map(post => m('li', post.title.und)))
+    //     ]);
+    // }
   };
-  
-  
-      const FilteredDataComponent = () => {
-  
-  
-  //const url = `https://api.digitalvalue.es/quartdepoblet/collections/articulos?nodeTypes=Actividades&limit=100&fields=_id,title,body,headerImage,tipo,categories&expand=true`;
   function NoHayResultados(){
               
-              return {
-                view: () => (
-                    m("p", "No hay resultados")
-                )
-              }
-            }
+    return {
+      view: () => (
+          m("div", {"class":"grid h-screen px-4 bg-white place-content-center"}, 
+          m("div", {"class":"text-center"},
+            [
+              m("img", {"src":"https://cdn.digitalvalue.es/quartdepoblet/assets2/64ddf565e72fae5a7cbda755"}),
+              m("h1", {"class":"mt-6 text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl"}, 
+                " Lo sentimos..."
+              ),
+              m("p", {"class":"mt-4 text-gray-500"}, 
+                "No hay resultados con los filtros seleccionados. Prueba con otros ambitos."
+              )
+            ]
+          )
+        )
+      )
+    }
+  }
   
+const FilteredDataComponent = () => {
+
+    PostList.loadPosts()
+
+    
+  
+  
+  //const url = `https://api.digitalvalue.es/quartdepoblet/collections/articulos?nodeTypes=Actividades&limit=100&fields=_id,title,body,headerImage,tipo,categories&expand=true`;  
      
   
         return {
@@ -54,12 +68,10 @@ const PostList = {
     
           view: () => {
   
-       
-  
+
         
-            PostList.loadPosts()
+            
             const filteredData = PostList.posts.filter(item => {
-  
   
   
               const tieneCategoria = item.categories.some(categorie => {
@@ -67,7 +79,7 @@ const PostList = {
   
                 if (FilteredDataComponent.categoriaFilter && categorie !== FilteredDataComponent.categoriaFilter) {
   
-                  return false;
+                  return null;
                 }
   
                 return true;
@@ -78,7 +90,7 @@ const PostList = {
   
                 if (FilteredDataComponent.tipoFilter && tipo !== FilteredDataComponent.tipoFilter) {
   
-                  return false;
+                  return null;
                 }
   
                 return true;
@@ -88,6 +100,7 @@ const PostList = {
   
   
             });
+
           
             return m("div.max-w-6xl.px-4.py-10.sm:px-6.lg:px-8.lg:py-14.mx-auto",
               m("form",
@@ -209,10 +222,12 @@ const PostList = {
                   ]
                 )
               ),
-          
+              console.log(filteredData),
+
+              filteredData.length > 0 ? 
               m('div', m("div.grid.sm:grid-cols-3.lg:grid-cols-3.gap-3.mt-10",
                 filteredData.map(item =>
-  
+                    
                   m("div.group.flex.flex-col.bg-white.border.border-gray-200.shadow-sm.rounded-xl.dark:bg-slate-900.dark:border-gray-700.dark:shadow-slate-700",
                     [
                       m("div.flex.flex-col.justify-center.items-center.rounded-t-xl",
@@ -247,11 +262,12 @@ const PostList = {
                       )
                     ]
                   )
-                )),
+                   )),
   
   
-              ),
-              m(NoHayResultados),
+              ) : m(NoHayResultados), 
+           
+              
   
             )
           }
